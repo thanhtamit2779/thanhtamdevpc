@@ -1,0 +1,45 @@
+<?php echo $this->tag->getDoctype() ; ?>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <?php echo $this->tag->getTitle(); ?>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <?php echo $this->assets->outputCss(); ?>
+  <?php echo $this->tag->javascriptInclude('public/templates/common/jquery/jquery.min.js'); ?>
+  <?php echo $this->tag->javascriptInclude('public/templates/common/bootstrap/js/bootstrap.min.js'); ?>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- ============= Header ============= -->
+  <?php $this->partial('include/header'); ?>
+
+  <!-- ============= Slider ============= -->
+  <?php $this->partial('include/slider'); ?>	
+
+  <!-- ============= Middle ============= -->
+  <main class="middle">
+      <div class="container-fluid content">
+          <div class="row"> 
+              <div class="content-wrappers <?php echo $class = (empty($sidebar)) ? 'col-sm-12 col-md-12 col-lg-12' : 'col-sm-9 col-md-9 col-lg-9';?>">
+                  <?php echo  $this->getContent() ; ?>                  
+              </div>
+              <?php if(!empty($sidebar)) $this->partial("include/sidebar"); ?>         
+          </div>
+      </div>
+  </main>
+  <!-- ============= Footer ============= -->
+  <?php echo  $this->assets->outputJs() ?>
+  
+  <script type="text/javascript">
+		$('canvas.particles-js-canvas-el').css({'margin-top': -175});
+  </script>
+  <?php $this->partial('include/footer'); ?>
+  <div class="scrollToTop" id="to-top"><span class="fa fa-arrow-up"></span></div>
+</div>
+<!-- ./wrapper -->
+</body>
+</html>
+
+

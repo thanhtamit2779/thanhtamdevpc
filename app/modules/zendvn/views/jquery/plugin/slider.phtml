@@ -1,0 +1,120 @@
+<script type="text/javascript">
+(function($){
+	$.simpleSlide  = function(selector, options) {
+		var defaults ;
+		defaults = {
+    		'itemtDefault' : 0,
+    		'delay'        : 2000,
+    		'fadeSpeed'	   : 1000,
+    		'from'         : 'az',
+        	'auto'         : true		
+  		} ;
+
+  		options = $.extend(defaults, options);
+
+  		var title = $(selector).find('div.title') ;
+  		var i     = options.itemDefault ;
+  		var imgs  = $(selector).children('img') ;
+  		var count = imgs.length;
+
+  		imgs.eq(i).show();
+  		title.text(imgs.eq(i).attr('title')).show().css('opacity', '0.7') ;
+
+  		if(options.auto == true) {
+  	  		setInterval(function(){
+  	  	  		imgs.eq(i).fadeOut(options.fadeSpeed) ;
+  	  	  		if(options.from == 'az') {
+  	  	  	  		i = (i + 1 == count) ? 0 : i + 1;
+  	  	  		}
+  	  	  		else {
+  	  	  	  		i = (i == 0) ? count - 1: i -1;
+  	  	  		}
+  	  	  	  	imgs.eq(i).fadeIn(options.fadeSpeed);
+  				title.text(imgs.eq(i).attr("title")).show().css("opacity","0.7");
+  	  	  	},options.delay);
+  		}
+	}					     
+})(jQuery) ;
+
+$(document).ready(function() {
+	$.simpleSlide("#slide",{'itemDefault': 0,'from': 'az','auto': true});
+}) ;
+</script>
+<style type="text/css">
+*{
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+}
+
+.clr{
+	clear: both;	
+}
+
+.left{
+	float: left;	
+}
+
+.input{
+	padding: 3px;
+	border: solid 1px #333;	
+}
+
+.button{
+	font-size: 12px;
+	padding: 3px;
+	border: solid 1px #333;	
+}
+
+
+.bg01{
+	background-color: #FF9;	
+}
+
+.bg02{
+	background-color: #CFC;
+}
+
+.slide{
+	width: 500px;
+	height: 333px;
+	border: solid 3px #666;
+	margin: 20px auto;
+	padding: 3px;	
+	position: relative;
+}
+
+.slide img{
+	position: absolute;	
+	display: none;
+}
+
+.slide .title{
+	position: absolute;	
+	width: 100%;
+	background-color: white;	
+	bottom: 0px;
+	left: 0px;
+	text-align: center;
+	font-size: 24px;
+	line-height: 40px;
+	display: none;
+}
+</style>
+<section class="box">
+	<div class="box-heading clickable box-collapsed">
+		<h1 class="box-title pull-left"><?php echo $title ;?></h1><span class="pull-right"><i class="fa fa-angle-up"></i></span>
+	</div>
+	<div class="box-body">
+		<div class="box-content">
+			<div id="slide" class="slide">
+            	<?php for($i = 1; $i <= 7; $i++) { ?>
+            	     <img src="<?php echo $this->url->getBaseUri() ;?>public/templates/modules/zend.vn/jquery/plugin/images/road-<?php echo $i?>.png" title="This is the picture <?php echo $i?>">
+            	<?php } ?> 
+                <div class="title"></div>
+			</div>
+		</div>
+	</div>
+</section>
+	
+

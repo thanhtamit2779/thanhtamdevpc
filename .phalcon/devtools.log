@@ -1,0 +1,1 @@
+Mon 3 16:43:44 DESKTOP-J1KCQCL php: [ERROR] 1049: SQLSTATE[HY000] [1049] Unknown database 'vdevpro' in C:\xampp\htdocs\phalcon-tool\scripts\Phalcon\Initializable.php on line 542
