@@ -1,0 +1,90 @@
+<section class="box">
+   <div class="box-heading clickable box-collapsed">
+      <h1 class="box-title pull-left"><?php echo $title ;?></h1>
+      <span class="pull-right"><i class="fa fa-angle-up"></i></span>
+   </div>
+   <div class="box-body">
+      <div class="box-content">
+         <form class="form-inline" id="filter">
+            <div class="form-group">
+               <select class="form-control select2-drop-mask input-sm" id="city">
+               		<option value="0">--- Chọn Tỉnh - Thành phố ---</option>      
+               </select>
+               
+            </div>
+            <div class="form-group">
+               <select class="form-control select2-drop-mask input-sm" id="district">
+               		<option value="0">--- Chọn Quận, Huyện, Thị xã  ---</option>
+               </select>
+            </div>
+            <div class="form-group">
+               <select class="form-control select2-drop-mask input-sm" id="ward">
+               		<option value="0">--- Chọn Đường, phố  ---</option>
+               </select>
+            </div>   
+            <button type="submit" class="btn btn-success btn-sm">Tìm</button>
+         </form>
+      </div>
+   </div>
+</section>
+<script type="text/javascript">
+	/* Get data from server */
+	var base_uri = '<?php echo $this->url->getBaseUri() ;?>' ;
+
+	function append_data(select, data, text = null, clean = true) {
+		if(clean == true) $(select).empty() ;
+		if(text != null || text != '') $(select).html(text);
+
+		if(data.length == 0) return false;
+		$.each(data, function(i, item) {
+			$(select).append('<option value="' + item.id + '">' + item.name + '</option>') ;
+		});	
+	}
+
+	function set_json_content(options) {
+		var args   = {
+			type 		: 'POST',
+			dataType	: 'json' ,		
+		} ;
+		var options = $.extend(args, options) ;
+		return $.ajax(options) ;
+	}
+	
+    $(document).ready(function() {
+        
+      /* Plugin Select 2 */
+      $('select').select2();
+
+	  /* Load Cities */
+      set_json_content({
+		  url 	:  base_uri + 'zendvn/jquery/location/getCities',
+	  }).done(function(response) {		   
+		  append_data('#city', response.data, '--- Chọn Tỉnh - Thành phố ---', false) ;
+	  });
+      
+ 	  /* Cities Select */ 
+	  $('#city').on('change', function(e) {
+		 var city_id = $(this).find(':selected').val() ; 
+		 $('#district').empty();
+		 $('#ward').empty();
+		 set_json_content({
+			url 	:  base_uri + 'zendvn/jquery/location/getDistricts',
+			data   : { city_id : city_id }
+		 }).done(function(response) {
+			append_data('#district', response.data, '<option value="0">--- Chọn Quận, Huyện, Thị xã  ---</option>') ;
+		 });
+	  }) ;
+	  
+ 	  /* Districts Select */
+	  $('#district').on('change', function(e) {
+		 var district_id = $(this).find(':selected').val() ; 
+		 $('#ward').empty();
+		 set_json_content({
+			url 	    :  base_uri + 'zendvn/jquery/location/getWards',
+			data   		: { district_id : district_id }
+		 }).done(function(response) {
+			append_data('#ward', response.data, '<option value="0">--- Chọn Đường, phố  ---</option>') ;
+		});
+	  }) ;
+    });  
+</script>

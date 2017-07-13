@@ -1,5 +1,4 @@
 <?php
-
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\Application;
 use Phalcon\Debug as Debug;
@@ -56,8 +55,6 @@ try {
     echo str_replace(["\n","\r","\t"], '', $application->handle()->getContent());
 
 } catch (\Exception $e) {
-    $debug = new Debug();
-    $debug->listen();
     echo $e->getMessage() . '<br>';
     echo '<pre>' . $e->getTraceAsString() . '</pre>';
 }

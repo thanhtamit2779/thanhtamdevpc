@@ -5,9 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <?php echo $this->tag->getTitle(); ?>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <?php echo $this->assets->outputCss(); ?>
-  <?php echo $this->tag->javascriptInclude('public/templates/common/jquery/jquery.min.js'); ?>
-  <?php echo $this->tag->javascriptInclude('public/templates/common/bootstrap/js/bootstrap.min.js'); ?>
+  <?php $this->assets->outputCss(); ?>
+  <?php $this->assets->outputJs('header_js'); ?>
+  
 </head>
 <body>
 <div class="wrapper">
@@ -30,7 +30,7 @@
       </div>
   </main>
   <!-- ============= Footer ============= -->
-  <?php echo  $this->assets->outputJs() ?>
+  <?php $this->assets->outputJs('footer_js') ?>
   
   <script type="text/javascript">
 		$('canvas.particles-js-canvas-el').css({'margin-top': -175});
