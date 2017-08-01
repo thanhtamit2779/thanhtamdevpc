@@ -14,7 +14,7 @@ class LocationController extends Zendvn
       
     public function getCitiesAction() {
         $result   = array();
-        $query    = 'SELECT * FROM cities WHERE `status` = 1' ;
+        $query    = 'SELECT id, name FROM cities WHERE `status` = 1' ;
         $result   = $this->db->fetchAll($query) ;
         return $this->response_data_json($result) ;
     }
@@ -23,7 +23,7 @@ class LocationController extends Zendvn
         $city_id    = $this->request->getPost('city_id', 'int') ;
         $type       = $this->request->getPost('type', 'string') ;
         
-        $phq        = "SELECT * FROM districts WHERE `status` = 1" ;
+        $phq        = "SELECT id, name FROM districts WHERE `status` = 1" ;
         if($type === '*') $phq .= ' AND `id` > 0' ; 
         $phq        .= ' AND `city_id` = ' . $city_id ; 
         $result     = $this->db->fetchAll($phq) ;
@@ -34,7 +34,7 @@ class LocationController extends Zendvn
         $district_id    = $this->request->getPost('district_id', 'int') ;
         $type           = $this->request->getPost('type', 'string') ;
         
-        $phq        = "SELECT * FROM wards WHERE `status` = 1" ;
+        $phq        = "SELECT id, name FROM wards WHERE `status` = 1" ;
         if($type === '*') $phq .= ' AND `id` > 0' ; 
         $phq        .= ' AND `district_id` = ' . $district_id ; 
         
