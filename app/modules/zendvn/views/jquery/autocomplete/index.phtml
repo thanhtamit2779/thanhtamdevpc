@@ -1,0 +1,135 @@
+<style type="text/css">
+	#show-result ul li {
+		cursor: pointer;
+	}
+	#show-result ul li:hover {
+		color:#000;
+	}
+</style>
+<section class="box">
+   <div class="box-heading clickable box-collapsed">
+      <h1 class="box-title pull-left"><?php echo $title ;?></h1>
+      <span class="pull-right"><i class="fa fa-angle-up"></i></span>
+   </div>
+   <div class="box-body">
+      <div class="box-content">
+      	  <div class="row">
+          	  <div class="col-md-6 col-sm-6 col-xs-12">
+          	  	 <input type="text" id="autocomplete" class="form-control" value="" name="search" placeholder=""/>
+				 <input type="hidden" id="autoload-id" class="form-control" value="" />
+          	  	 <div id="show-result" style="display:none" class="bg-success"></div>
+          	  </div>
+      	  </div>
+      </div>
+   </div>
+</section>
+<script type="text/javascript">
+	var base_uri = '<?php echo $this->url->getBaseUri() ;?>' ;
+	(function($) {
+		$.autocomplete = function(options =  null) {
+			/* Đối tượng mặc định */
+			var defaults = {
+				'selector' 		: '#autocomplete' ,
+				'placeholder'	: 'Nhập từ khóa từ khóa tìm kiếm...',
+				'autocomplete_id'  : '#autoload-id', 
+				'min_char'      : 2,
+				'show_result'   : '#show-result',
+				'limit'         : 5,
+				'link_to'       : false	
+			};
+
+			/* Gộp mảng 2 đối tượng */
+			var options = $.extend(defaults, options);
+
+			/* Khai báo biến dùng chung */
+			var selector 	= options.selector;
+			var placeholder	= options.placeholder;
+			var show_result = options.show_result;
+			var min_char 	= options.min_char;
+			var autocomplete_id = options.autocomplete_id;
+
+			add_placeholder() ;
+
+			/*$(selector).on('focus click', function(e){
+			 	$(this).val('');
+			});
+			*/
+			
+			$(selector).on('blur', function() {
+				add_placeholder();
+				$(show_result).delay(700).slideUp(700).hide() ;
+			});
+			
+
+			$(selector).on('keyup', function() {
+				var keyword = $(this).val();
+				if(keyword.length > min_char) {
+					$.ajax({
+						url 		: base_uri +  'zendvn/jquery/autocomplete/response',
+						dataType	: 'json',
+						type        : 'post',
+						data        : {
+							keyword : keyword,
+							limit   : options.limit
+						}
+					}).done(function(data) {
+						if(data.length == 0) {
+							$(show_result).hide();
+							return false;
+						}
+						else {
+							var item = list_item(data.data);
+							$(show_result).empty();
+							set_result_position();
+							$(show_result).append(item);
+							
+							$(show_result + ' ul li').on("mouseenter mouseleave",function(e){
+								$(this).toggleClass("bg-success");
+							});
+
+							$(show_result + ' ul li').on('click', function(e) {
+								$(selector).val($(this).text());
+								$(autocomplete_id).val($(this).data('item-id'));	
+								$(show_result).delay(700).hide();							
+							});
+						}						
+					});
+				}
+			});
+
+			function set_result_position() {
+				$(show_result).css({
+					top      	: $(selector).outerHeight(),
+					left     	: 5,
+					width    	: $(selector).innerWidth(),
+					position 	:'absolute',
+					padding     : '5px 10px',
+					display  	:'block',
+				});
+			}
+
+			function list_item(data) {
+				if(data.length == 0) return false;
+				
+				var html = '<ul>' ;
+				$.each(data, function(k, item) {
+					html += '<li data-item-id="' + item.id + '">' + item.name + '</li>';
+				});
+
+				html += '</ul>';
+
+				return html ;
+			}
+
+			function add_placeholder() {				
+				if($(selector).attr('placeholder').length == 0) $(selector).attr('placeholder', placeholder);				
+			}
+		};
+		 
+	})(jQuery);
+
+	$(document).ready(function() {
+		$.autocomplete();
+	});
+	
+</script>
