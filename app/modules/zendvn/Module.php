@@ -20,6 +20,7 @@ class Module implements ModuleDefinitionInterface
 
         $loader->registerNamespaces([
             'Vdevpro\Common\Controllers'                => APP_PATH . '/common/controllers/',
+            'Vdevpro\Common\Models'                     => APP_PATH . '/common/models/',
             'Vdevpro\Modules\Zendvn\Controllers\Jquery' => __DIR__ . '/controllers/jquery/',
             'Vdevpro\Modules\Zendvn\Controllers'        => __DIR__ . '/controllers/',
             'Vdevpro\Modules\Zendvn\Models'             => __DIR__ . '/models/',
