@@ -1,0 +1,235 @@
+<?php $items = $page->items; ?>
+<section class="box">
+   <div class="box-heading clickable box-collapsed">
+      <h1 class="box-title pull-left"><?php echo $title ;?></h1>
+      <span class="pull-right"><i class="fa fa-angle-up"></i></span>
+   </div>
+   <div class="box-body">
+      <div class="box-content">
+      	<div class="table-responsive" id="load-items">          
+      	  <?php if(!empty($items)) :?>     	  
+              <table class="table">
+                <?php foreach ($items as $item) :?>
+                  <tr>
+                    <td class="text-left"><?php echo $item->id; ?></td>
+                    <td class="text-left"><?php echo $item->name; ?></td>
+                  </tr>   		
+    			<?php endforeach ;?>
+              </table>
+          <?php endif?>
+		</div><!-- / .table-responsive -->
+
+        <div id="paginations" class="clearfix row">
+            <div class="col-xs-12 col-sm-6">
+                <ul class="pagination" style="margin:0px">
+                    <li><a class="first-page btn btn-xs" data-first-page="<?php echo $page->first ;?>">Trang đầu</a></li> 
+                    <li><a class="btn btn-xs before-page" data-before-page="<?php echo $page->before ;?>"><i class="fa fa-arrow-left"></i> Trang trước</a></li>
+                    <li class="pull-left"><input type="number" class="form-control input-sm text-center current-page" min="1" max="<?php echo $page->total_pages ;?>" value="<?php echo $page->current?>" data-page-current="<?php echo $page->current; ?>"/></li>             
+                    <li><a class="btn btn-xs next-page" data-next-page="<?php echo $page->next ;?>">Trang sau <i class="fa fa-arrow-left fa fa-arrow-right"></i></a></li>
+                    <li><a class="btn btn-xs last-page" data-last-page="<?php echo $page->last ;?>">Trang cuối</a></li> 
+                </ul><!-- / .pagination -->
+            </div>
+            <div class="col-xs-12 col-sm-6"><p class="info-page">Trang <span class="current-info-page"><?php echo $page->current?></span> trên <span class="total-info-page"><?php echo $page->total_pages ;?></span></p></div>
+        </div><!-- / #pagination -->   	
+      </div>
+   </div>
+</section>
+<script type="text/javascript">
+	    var base_uri = '<?php echo $this->url->getBaseUri() ;?>' ;
+    
+        (function($) {
+            $.pagination = function(options = null) {
+                
+                /* KHAI BÁO ĐỐI TƯỢNG MẶC ĐỊNH */
+                var defaults = {            
+                    load_items       : '#load-items' ,
+                    load_pagination  : '#pagination' ,
+                    current_info_page     : '.current-info-page',
+                    current_page     : '.current-page',
+                    first_page       : '.first-page',
+                    before_page      : '.before-page' ,
+                    next_page        : '.next-page' ,
+                    last_page        : '.last-page',
+                    limit            : 10,
+                    type             : 'post',
+                    data_type        : 'json',
+                } ;
+
+                /* GỘP ĐỐI TƯỢNG LẠI VỚI NHAU */
+                var options          = $.extend(defaults, options) ;
+
+                /* KHAI BÁO BIẾN */
+                var load_items       = options.load_items ;
+                var load_pagination  = options.load_pagination ;
+                var current_page     = options.current_page ;
+                var first_page       = options.first_page ;
+                var before_page      = options.before_page ;
+                var next_page        = options.next_page ;
+                var last_page        = options.last_page ;
+                var limit            = options.limit;
+                var type             = options.type;
+                var data_type        = options.data_type;
+                var current_info_page        = options.current_info_page;
+
+                /* URL*/
+                var url              = base_uri + 'zendvn/jquery/pagination/load' ;
+
+                /* LOAD DỮ LIỆU */
+                function load_item(page) {
+                    $.ajax({
+                        url       :  url,
+                        type      :  type,
+                        dataType  :  data_type,
+                        data      :  { page : page, limit : limit }
+                    }).done(function(response) {
+                        var data = response.data;
+                        if(data.length == 0) return false;
+
+                        var items = data.items ;
+
+                        $(load_items + ' table').empty();
+
+                        if(data_type == 'json') {
+                            $(load_items + ' table').fadeIn(7000).delay(6000).append(render_html(items));
+                        }
+                        
+                        set_current_info_page(data.current);
+                        set_first_page(data.first, data.current);
+                        set_before_page(data.before, data.current);
+                        set_current_page(data.current);
+                        set_next_page(data.next);
+                        set_last_page(data.last);
+
+                    });
+                    return false;
+                }
+
+                /* RENDER HTML */
+                function render_html(items) {
+                    if(items.lenght == 0) return false; 
+                    var html = '' ;
+                    $.each(items, function(i, item) {
+                        html += '<tr><td class="text-left">'+ item.id +'</td><td class="text-left">'+ item.name +'</td></tr>' ;
+                    });
+                    return html;
+                }
+
+                /* SET INFO CURRENT PAGE */
+                function set_current_info_page(page) {
+                    if(page.length == 0) return false;
+                    $(current_info_page).text(page) ;
+                }
+
+                /* SET FIRST PAGE */
+                function set_first_page(page, current_page = null) {
+                    if(page.length == 0) return false;
+                    $(first_page).data('first-page', page) ;
+                }
+
+                /* GET FIRST PAGE */
+                function get_first_page(element) {
+                    if(element.length == 0) return false;
+                    return $(element).data('first-page');
+                }
+
+                /* SET BEFORE PAGE */
+                function set_before_page(page, current_page = null) {
+                    if(page.length == 0) return false;
+                    $(before_page).data('before-page', page) ;
+                }
+
+                /* GET BEFORE PAGE */
+                function get_before_page(element) {
+                    if(element.length == 0) return false;
+                    return $(element).data('before-page');
+                }
+
+                /* GET CURRENT PAGE */
+                function get_current_page(element) {
+                    if(element.length == 0) return false;
+                    return $(element).val();
+                }
+
+                /* SET CURRENT PAGE */
+                function set_current_page(page) {
+                    if(page.length == 0) return false;
+                    $(current_page).val(page) ;
+                }
+
+                /* SET NEXT PAGE */
+                function set_next_page(page, current_page = null) {
+                    if(page.length == 0) return false;
+                    $(next_page).data('next-page', page) ;
+                }
+
+                /* GET NEXT PAGE */
+                function get_next_page(element) {
+                    if(element.length == 0) return false;
+                    return $(element).data('next-page');
+                }
+
+                /* SET LAST PAGE */
+                function set_last_page(page, current_page = null) {
+                    if(page.length == 0) return false;
+                    $(last_page).data('last-page', page) ;
+                }
+
+                /* GET LAST PAGE */
+                function get_last_page(element) {
+                    if(element.length == 0) return false;
+                    return $(element).data('last-page');
+                }
+
+                /* CLICK NEXT PAGE */
+                $(next_page).on('click', function(e) {
+                    page = get_next_page(this);                
+                    load_item(page);
+                });
+
+                /* CLICK FIRST PAGE */
+                $(last_page).on('click', function(e) {
+                    page = get_last_page(this);                
+                    load_item(page);
+                });
+                
+                /* CLICK FIRST PAGE */
+                $(first_page).on('click', function(e) {
+                    page = get_first_page(this);                
+                    load_item(page);
+                });
+
+                /* CLICK BEFORE PAGE */
+                $(before_page).on('click', function(e) {
+                    page = get_before_page(this);                
+                    load_item(page);
+                });
+
+                /* CLICK CURRENT PAGE */
+                $(current_page).on('click', function(e) {
+                    page = get_current_page(this);
+                    load_item(page);
+                });
+
+                /* ENTER CURRENT PAGE */
+                $(current_page).on('keyup', function(e) {
+                    if(e.keyCode == 13 || e.keyCode == 38 || e.keyCode == 40) {
+                        page = get_current_page(this);
+                        load_item(page);
+                        return false;
+                    }
+                    return false;
+                });
+            }
+        })(jQuery);
+
+    $(document).ready(function() {
+        $.pagination({
+            limit : 10
+        });
+    })
+</script>
+
+
+
+
+
